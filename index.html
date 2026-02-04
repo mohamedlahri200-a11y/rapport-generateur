@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistant PFE - ENSA Oujda</title>
+    <style>
+        /* === STYLE PROFESSIONNEL COMME LA CAPTURE === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 1000px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2d3b8a 0%, #1a237e 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+            border-bottom: 3px solid #00bcd4;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Section Assistant IA */
+        .assistant-section {
+            background: #f8f9ff;
+            padding: 25px 40px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .assistant-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .assistant-status .icon {
+            background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
+        }
+
+        .assistant-text {
+            flex-grow: 1;
+        }
+
+        .assistant-text h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1a237e;
+            margin-bottom: 5px;
+        }
+
+        .status-badge {
+            background: #4caf50;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .assistant-message {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            border-left: 4px solid #00bcd4;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Formulaire */
+        .form-section {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            color: #1a237e;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-label i {
+            color: #00bcd4;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #f8f9ff;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #00bcd4;
+            box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+            background: white;
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Bouton Générer */
+        .generate-btn {
+            background: linear-gradient(135deg, #00bcd4 0%, #00838f 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 6px 20px rgba(0, 188, 212, 0.3);
+            margin-top: 20px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 188, 212, 0.4);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Preview Section */
+        .preview-section {
+            background: #f8f9ff;
+            border-top: 3px solid #e0e0e0;
+            padding: 30px 40px;
+            display: none;
+        }
+
+        .preview-section.active {
+            display: block;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .preview-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .rode-badge {
+            display: inline-block;
+            background: #ff5722;
+            color: white;
+            padding: 8px 24px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3);
+        }
+
+        .preview-title {
+            color: #1a237e;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .preview-subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .preview-details {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border-left: 4px solid #00bcd4;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .detail-item {
+            margin: 12px 0;
+            font-size: 16px;
+            display: flex;
+        }
+
+        .detail-item strong {
+            color: #1a237e;
+            min-width: 180px;
+            display: inline-block;
+        }
+
+        /* Format options */
+        .format-options {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px solid #e0e0e0;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .format-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .pdf-icon {
+            color: #f44336;
+            font-size: 24px;
+        }
+
+        .action-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .regenerate-btn {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+        }
+
+        .preview-btn {
+            background: linear-gradient(135deg, #2196f3 0%, #0d47a1 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 35, 126, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+            color: white;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #00bcd4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 20px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .loading-subtext {
+            font-size: 14px;
+            opacity: 0.8;
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .progress-bar {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00bcd4, #4caf50);
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 3px;
+        }
+
+        /* Messages */
+        .message {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            display: none;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .message.success {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+            color: white;
+            display: block;
+        }
+
+        .message.error {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            color: white;
+            display: block;
+        }
+
+        /* Footer */
+        .footer {
+            background: #f8f9ff;
+            padding: 20px 40px;
+            text-align: center;
+            color: #666;
+            border-top: 2px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        .tech-stack {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .tech-stack i {
+            font-size: 20px;
+            color: #1a237e;
+            transition: transform 0.3s;
+        }
+
+        .tech-stack i:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 16px;
+            }
+            
+            .header, .assistant-section, .form-section, .preview-section {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .format-options {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .detail-item {
+                flex-direction: column;
+            }
+            
+            .detail-item strong {
+                min-width: auto;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1># PFE</h1>
+            <div class="subtitle">Assistant intelligent pour la création de rapports de stage et PFE – ENSA</div>
+        </div>
+
+        <!-- Section Assistant IA -->
+        <div class="assistant-section">
+            <div class="assistant-status">
+                <div class="icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="assistant-text">
+                    <h2>Assistant IA</h2>
+                </div>
+                <div class="status-badge" id="statusBadge">PRÊT</div>
+            </div>
+            <div class="assistant-message">
+                Bonjour ! Je suis votre assistant pour créer des rapports de stage et PFE professionnels.
+                Décrivez votre projet, stage ou PFE, et je générerai un rapport structuré selon le framework de votre choix (STAR, SOAR, CAR, PAR).
+                Le rapport généré respectera les normes académiques de l'ENSA Oujda.
+            </div>
+        </div>
+
+        <!-- Formulaire -->
+        <div class="form-section">
+            <form id="pfeForm">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-book"></i> SUJET DU RAPPORT *
+                    </label>
+                    <input type="text" class="form-input" id="subject" 
+                           placeholder="Ex: Conception et développement d'un système de gestion..." required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-file-alt"></i> DESCRIPTION DÉTAILLÉE *
+                    </label>
+                    <textarea class="form-textarea" id="description" 
+                              placeholder="Décrivez votre projet en détail : objectifs, méthodologie, technologies utilisées, résultats attendus..."
+                              required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-user-graduate"></i> ÉTUDIANT
+                        </label>
+                        <input type="text" class="form-input" id="student_name" 
+                               placeholder="Ex: Mohamed Lahri">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-graduation-cap"></i> SPÉCIALITÉ
+                        </label>
+                        <input type="text" class="form-input" id="specialite" 
+                               placeholder="Génie Informatique" value="Génie Informatique">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-hashtag"></i> NUMÉRO PFE
+                        </label>
+                        <input type="text" class="form-input" id="numero" 
+                               placeholder="GI2025/2026" value="GI2025/2026">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-calendar"></i> ANNÉE UNIVERSITAIRE
+                        </label>
+                        <input type="text" class="form-input" id="academic_year" 
+                               placeholder="2025/2026" value="2025/2026">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-chalkboard-teacher"></i> ENCADRANT
+                        </label>
+                        <input type="text" class="form-input" id="supervisor" 
+                               placeholder="Ex: Pr. Ahmed Sami">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-calendar-check"></i> DATE DE SOUTENANCE
+                        </label>
+                        <input type="text" class="form-input" id="soutenue_le" 
+                               placeholder="JJ/MM/AAAA">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-users"></i> MEMBRES DU JURY
+                    </label>
+                    <textarea class="form-textarea" id="jury" 
+                              placeholder="Ex: Pr. Ali Mayo, Dr. Zaki Fati, Pr. Mohammed Saber"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-sitemap"></i> FRAMEWORK DE STRUCTURATION
+                    </label>
+                    <select class="form-input" id="framework">
+                        <option value="STAR">STAR (Situation, Tâche, Action, Résultat)</option>
+                        <option value="SOAR">SOAR (Situation, Obstacle, Action, Résultat)</option>
+                        <option value="CAR">CAR (Contexte, Action, Résultat)</option>
+                        <option value="PAR">PAR (Problème, Action, Résultat)</option>
+                        <option value="CLASSIC">Classique (Introduction, Développement, Conclusion)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="generate-btn" id="generateBtn">
+                    <i class="fas fa-magic"></i> GÉNÉRER LE RAPPORT PFE
+                </button>
+
+                <div class="message" id="message"></div>
+            </form>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="preview-section" id="previewSection">
+            <div class="preview-header">
+                <div class="rode-badge">RODE <strong id="currentYear"></strong></div>
+                <h2 class="preview-title">Université Mohammed Premier - ENSA Oujda</h2>
+                <p class="preview-subtitle">Mémoire de Projet de Fin d'Étude (PFE)</p>
+                
+                <div class="preview-details">
+                    <div class="detail-item">
+                        <strong>Sujet du projet :</strong> <span id="previewSubject"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Étudiant :</strong> <span id="previewStudent"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Spécialité :</strong> <span id="previewSpecialite"></span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Année universitaire :</strong> <span id="previewYear"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="format-options">
+                <div class="format-option">
+                    <i class="fas fa-file-pdf pdf-icon"></i>
+                    <span>PDF PROFESSIONNEL</span>
+                </div>
+                
+                <a href="#" class="action-btn download-btn" id="downloadBtn" style="display: none;">
+                    <i class="fas fa-download"></i> TÉLÉCHARGER LE PDF
+                </a>
+                
+                <button class="action-btn regenerate-btn" id="regenerateBtn">
+                    <i class="fas fa-redo"></i> RÉGÉNÉRER
+                </button>
+                
+                <button class="action-btn preview-btn" id="previewBtn">
+                    <i class="fas fa-eye"></i> PRÉVISUALISER
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2025 École Nationale des Sciences Appliquées - Oujda</p>
+            <p>Université Mohammed Premier</p>
+            <div class="tech-stack">
+                <span>Powered by:</span>
+                <i class="fab fa-python" title="Python"></i>
+                <i class="fab fa-html5" title="HTML5"></i>
+                <i class="fab fa-css3-alt" title="CSS3"></i>
+                <i class="fab fa-js" title="JavaScript"></i>
+                <i class="fas fa-brain" title="Groq AI"></i>
+                <i class="fas fa-flask" title="Flask"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Génération du rapport en cours</div>
+        <div class="loading-subtext" id="loadingSubtext">L'IA est en train de créer votre rapport professionnel...</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Éléments DOM
+            const form = document.getElementById('pfeForm');
+            const previewSection = document.getElementById('previewSection');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const regenerateBtn = document.getElementById('regenerateBtn');
+            const previewBtn = document.getElementById('previewBtn');
+            const generateBtn = document.getElementById('generateBtn');
+            const messageDiv = document.getElementById('message');
+            const progressFill = document.getElementById('progressFill');
+            const loadingSubtext = document.getElementById('loadingSubtext');
+            const statusBadge = document.getElementById('statusBadge');
+            const currentYear = document.getElementById('currentYear');
+            
+            // Année actuelle
+            currentYear.textContent = new Date().getFullYear();
+            
+            // Remplir avec un exemple
+            fillExampleData();
+            
+            // Vérifier le statut du serveur
+            checkServerStatus();
+            
+            // Soumettre le formulaire
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Validation
+                if (!validateForm()) {
+                    return;
+                }
+                
+                // Afficher le chargement
+                showLoading(true);
+                generateBtn.disabled = true;
+                generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> GÉNÉRATION...';
+                
+                // Collecter les données
+                const formData = collectFormData();
+                
+                try {
+                    // Animer la progression
+                    animateProgress();
+                    
+                    // Envoyer la requête
+                    const response = await fetch('/generate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Succès
+                        showMessage('success', '✅ Rapport généré avec succès!');
+                        
+                        // Mettre à jour l'aperçu
+                        updatePreview(formData);
+                        
+                        // Mettre à jour le bouton de téléchargement
+                        downloadBtn.href = result.pdf_url;
+                        downloadBtn.download = result.filename;
+                        downloadBtn.style.display = 'flex';
+                        
+                        // Afficher la section preview
+                        previewSection.classList.add('active');
+                        
+                        // Faire défiler jusqu'à l'aperçu
+                        previewSection.scrollIntoView({ behavior: 'smooth' });
+                        
+                        // Sauvegarder les données
+                        localStorage.setItem('lastPFE', JSON.stringify({
+                            data: formData,
+                            result: result
+                        }));
+                        
+                    } else {
+                        // Erreur
+                        showMessage('error', '❌ ' + (result.error || 'Erreur lors de la génération'));
+                    }
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    showMessage('error', '❌ Erreur de connexion au serveur');
+                } finally {
+                    // Masquer le chargement
+                    showLoading(false);
+                    generateBtn.disabled = false;
+                    generateBtn.innerHTML = '<i class="fas fa-magic"></i> GÉNÉRER LE RAPPORT PFE';
+                }
+            });
+            
+            // Régénérer
+            regenerateBtn.addEventListener('click', function() {
+                const lastPFE = localStorage.getItem('lastPFE');
+                if (lastPFE) {
+                    const { data } = JSON.parse(lastPFE);
+                    // Remplir le formulaire
+                    fillFormData(data);
+                    // Soumettre
+                    form.dispatchEvent(new Event('submit'));
+                } else {
+                    showMessage('error', 'Aucun rapport précédent trouvé');
+                }
+            });
+            
+            // Prévisualiser
+            previewBtn.addEventListener('click', function() {
+                const downloadLink = downloadBtn.href;
+                if (downloadLink && downloadLink !== '#') {
+                    window.open(downloadLink, '_blank');
+                } else {
+                    showMessage('error', 'Générez d\'abord un rapport');
+                }
+            });
+            
+            // Fonctions utilitaires
+            function fillExampleData() {
+                if (!localStorage.getItem('exampleShown')) {
+                    document.getElementById('subject').value = 'Conception et développement d\'un assistant IA pour la génération automatique de rapports PFE';
+                    document.getElementById('description').value = 'Ce projet vise à développer une application web intelligente permettant aux étudiants de générer automatiquement des rapports de Projet de Fin d\'Études (PFE) conformes aux normes académiques de l\'ENSA Oujda. L\'application utilise l\'intelligence artificielle (Groq AI) pour générer du contenu structuré et produit un PDF professionnel avec toutes les sections requises : page de garde, dédicace, résumé, introduction, développement, conclusion et bibliographie.';
+                    document.getElementById('student_name').value = 'Mohamed Lahri';
+                    document.getElementById('supervisor').value = 'Pr. Ahmed Sami';
+                    document.getElementById('jury').value = 'Pr. Ali Mayo, Dr. Zaki Fati, Pr. Mohammed Saber';
+                    document.getElementById('soutenue_le').value = '17/07/2025';
+                    
+                    localStorage.setItem('exampleShown', 'true');
+                }
+            }
+            
+            function checkServerStatus() {
+                fetch('/test')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.groq_configured) {
+                            statusBadge.innerHTML = 'PRÊT <i class="fas fa-check"></i>';
+                            statusBadge.style.background = '#4caf50';
+                        } else {
+                            statusBadge.innerHTML = 'API MANQUANTE <i class="fas fa-exclamation-triangle"></i>';
+                            statusBadge.style.background = '#ff9800';
+                            showMessage('warning', '⚠️ API Groq non configurée. Le contenu sera généré avec des templates par défaut.');
+                        }
+                    })
+                    .catch(() => {
+                        statusBadge.innerHTML = 'HORS LIGNE <i class="fas fa-plug"></i>';
+                        statusBadge.style.background = '#f44336';
+                    });
+            }
+            
+            function validateForm() {
+                const subject = document.getElementById('subject').value.trim();
+                const description = document.getElementById('description').value.trim();
+                
+                if (!subject) {
+                    showMessage('error', '❌ Le sujet est obligatoire');
+                    return false;
+                }
+                
+                if (!description) {
+                    showMessage('error', '❌ La description est obligatoire');
+                    return false;
+                }
+                
+                if (description.length < 50) {
+                    showMessage('error', '❌ La description doit contenir au moins 50 caractères');
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            function collectFormData() {
+                return {
+                    subject: document.getElementById('subject').value.trim(),
+                    description: document.getElementById('description').value.trim(),
+                    student_name: document.getElementById('student_name').value.trim(),
+                    specialite: document.getElementById('specialite').value.trim(),
+                    numero: document.getElementById('numero').value.trim(),
+                    academic_year: document.getElementById('academic_year').value.trim(),
+                    supervisor: document.getElementById('supervisor').value.trim(),
+                    soutenue_le: document.getElementById('soutenue_le').value.trim(),
+                    jury: document.getElementById('jury').value.trim(),
+                    framework: document.getElementById('framework').value
+                };
+            }
+            
+            function fillFormData(data) {
+                document.getElementById('subject').value = data.subject || '';
+                document.getElementById('description').value = data.description || '';
+                document.getElementById('student_name').value = data.student_name || '';
+                document.getElementById('specialite').value = data.specialite || 'Génie Informatique';
+                document.getElementById('numero').value = data.numero || 'GI2025/2026';
+                document.getElementById('academic_year').value = data.academic_year || '2025/2026';
+                document.getElementById('supervisor').value = data.supervisor || '';
+                document.getElementById('soutenue_le').value = data.soutenue_le || '';
+                document.getElementById('jury').value = data.jury || '';
+                document.getElementById('framework').value = data.framework || 'STAR';
+            }
+            
+            function updatePreview(data) {
+                document.getElementById('previewSubject').textContent = data.subject;
+                document.getElementById('previewStudent').textContent = data.student_name || 'Non spécifié';
+                document.getElementById('previewSpecialite').textContent = data.specialite || 'Génie Informatique';
+                document.getElementById('previewYear').textContent = data.academic_year || '2025/2026';
+            }
+            
+            function showLoading(show) {
+                if (show) {
+                    loadingOverlay.classList.add('active');
+                    progressFill.style.width = '0%';
+                } else {
+                    loadingOverlay.classList.remove('active');
+                }
+            }
+            
+            function animateProgress() {
+                const steps = [
+                    'Analyse du sujet...',
+                    'Génération du contenu...',
+                    'Création de la structure...',
+                    'Génération du PDF...',
+                    'Finalisation...'
+                ];
+                
+                let currentStep = 0;
+                const interval = setInterval(() => {
+                    if (currentStep >= steps.length) {
+                        clearInterval(interval);
+                        return;
+                    }
+                    
+                    const progress = ((currentStep + 1) / steps.length) * 100;
+                    progressFill.style.width = progress + '%';
+                    loadingSubtext.textContent = steps[currentStep];
+                    currentStep++;
+                }, 1000);
+            }
+            
+            function showMessage(type, text) {
+                messageDiv.className = `message ${type}`;
+                messageDiv.textContent = text;
+                messageDiv.style.display = 'block';
+                
+                // Masquer après 5 secondes
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 5000);
+            }
+            
+            // Extraire les infos de la description
+            document.getElementById('description').addEventListener('input', function() {
+                const desc = this.value;
+                // Détection simple du nom dans la description
+                const nameMatch = desc.match(/je suis (\w+ \w+)/i) || desc.match(/étudiant[ :]+(\w+ \w+)/i);
+                if (nameMatch && !document.getElementById('student_name').value) {
+                    document.getElementById('student_name').value = nameMatch[1];
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+

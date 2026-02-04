@@ -1,0 +1,5 @@
+flask==3.0.0
+python-dotenv==1.0.0
+groq==0.4.1
+fpdf2==2.7.6
+markdown==3.5
